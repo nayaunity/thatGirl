@@ -13,12 +13,16 @@ import FirebaseFirestore
 struct DailyChecklistView: View {
     @EnvironmentObject var sessionStore: SessionStore
     @State private var checklist: [ChecklistItem] = []
-    
-    // Function to get current date as a String
+    @State private var totalPoints: Int = 0
+
     private func getCurrentDateString() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMMM d" // Example: "Monday, January 20"
+        dateFormatter.dateFormat = "EEEE, MMMM d"
         return dateFormatter.string(from: Date())
+    }
+
+    private func calculateTotalPoints() {
+        totalPoints = checklist.reduce(0) { $0 + ($1.isCompleted ? $1.points : 0) }
     }
 
     var body: some View {
@@ -26,6 +30,11 @@ struct DailyChecklistView: View {
             Text(getCurrentDateString())
                 .font(.title)
                 .padding()
+
+            Text("Points: \(totalPoints)")
+                .font(.headline)
+                .padding()
+
             List($checklist) { $item in
                 HStack {
                     Text(item.taskName)
@@ -40,7 +49,7 @@ struct DailyChecklistView: View {
         .onAppear(perform: loadChecklist)
     }
 
-    func loadChecklist() {
+    private func loadChecklist() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
 
         let db = Firestore.firestore()
@@ -50,6 +59,7 @@ struct DailyChecklistView: View {
             if let document = document, document.exists {
                 if let data = document.data(), let checklistData = data["dailyChecklist"] as? [[String: Any]] {
                     self.checklist = checklistData.map { ChecklistItem(dictionary: $0) }
+                    self.calculateTotalPoints() // Calculate points after loading checklist
                 }
             } else {
                 print("Document does not exist")
@@ -60,38 +70,18 @@ struct DailyChecklistView: View {
     func toggleTaskCompletion(_ item: ChecklistItem) {
         guard let index = checklist.firstIndex(where: { $0.id == item.id }) else { return }
 
-        checklist[index].isCompleted.toggle() // Update local state
-        updateChecklistInFirestore() // Update Firestore
+        checklist[index].isCompleted.toggle()
+        updateChecklistInFirestore() // Update Firestore with new checklist
+        calculateTotalPoints() // Recalculate total points
     }
 
-    func updateChecklistInFirestore() {
+    private func updateChecklistInFirestore() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         let docRef = db.collection("users").document(uid)
 
-        // Convert the entire updated checklist to dictionary format
         let updatedChecklist = checklist.map { $0.dictionaryRepresentation }
-
-        // Replace the entire 'dailyChecklist' field in Firestore
         docRef.updateData(["dailyChecklist": updatedChecklist]) { err in
-            if let err = err {
-                print("Error updating document: \(err)")
-            } else {
-                print("Document successfully updated")
-            }
-        }
-    }
-
-
-    func updateChecklistInFirestore(_ item: ChecklistItem) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let db = Firestore.firestore()
-        let docRef = db.collection("users").document(uid)
-
-        // Assuming `dailyChecklist` is stored as an array in Firestore
-        docRef.updateData([
-            "dailyChecklist": FieldValue.arrayUnion([item.dictionaryRepresentation])
-        ]) { err in
             if let err = err {
                 print("Error updating document: \(err)")
             } else {
