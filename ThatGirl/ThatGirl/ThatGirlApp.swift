@@ -20,10 +20,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ThatGirlApp: App {
+    @StateObject private var sessionStore = SessionStore()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if sessionStore.isUserAuthenticated == .signedIn {
+                // If the user is signed in, show the TabView
+                ContentView()
+                    .environmentObject(sessionStore)
+            } else {
+                // If the user is not signed in, show the LoginSignupView
+                LoginSignupView()
+                    .environmentObject(sessionStore)
+            }
         }
     }
 }

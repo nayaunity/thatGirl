@@ -27,15 +27,16 @@ struct DailyChecklistView: View {
 
     var body: some View {
         VStack {
+            LogoutLink()
+                .offset(y: -50)
+                .offset(x: -150)
             Text(getCurrentDateString())
                 .font(.title)
                 .fontWeight(.light)
                 .padding(.top)
-//                .foregroundColor(HexColor.fromHex("CCCCFF"))
 
             Text("Points: \(totalPoints)")
                 .font(.title2)
-//                .foregroundColor(HexColor.fromHex("CCCCFF"))
                 .padding(.bottom)
 
             List($checklist.indices, id: \.self) { index in
@@ -57,6 +58,7 @@ struct DailyChecklistView: View {
             }
             .listStyle(PlainListStyle())
         }
+        .navigationBarHidden(true)
         .padding()
         .onAppear(perform: loadChecklist)
     }
