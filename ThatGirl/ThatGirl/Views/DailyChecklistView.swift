@@ -13,9 +13,19 @@ import FirebaseFirestore
 struct DailyChecklistView: View {
     @EnvironmentObject var sessionStore: SessionStore
     @State private var checklist: [ChecklistItem] = []
+    
+    // Function to get current date as a String
+    private func getCurrentDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMMM d" // Example: "Monday, January 20"
+        return dateFormatter.string(from: Date())
+    }
 
     var body: some View {
         VStack {
+            Text(getCurrentDateString())
+                .font(.title)
+                .padding()
             List($checklist) { $item in
                 HStack {
                     Text(item.taskName)
