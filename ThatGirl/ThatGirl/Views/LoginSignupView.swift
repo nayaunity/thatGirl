@@ -35,7 +35,14 @@ struct LoginSignupView: View {
                     }
                     
                     Button("Sign Up") {
-                        signUp()
+                        signUp { success in
+                            if success {
+                                // Proceed to profile creation
+                                self.navigateToProfileCreation = true
+                            } else {
+                                print("sign up failure")
+                            }
+                        }
                     }
                     .padding()
                     
@@ -57,16 +64,19 @@ struct LoginSignupView: View {
         }
     }
 
-    func signUp() {
+    func signUp(completion: @escaping (Bool) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
                 print("SignUp Error: \(error.localizedDescription)")
+                completion(false)
             } else {
-                self.navigateToProfileCreation = true
+                // User is created but not yet fully authenticated for app purposes
+                completion(true) // Profile creation can now proceed
             }
         }
     }
+
 
     func login() {
         // Handle login logic

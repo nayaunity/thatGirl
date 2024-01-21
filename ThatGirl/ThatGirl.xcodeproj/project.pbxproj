@@ -34,6 +34,7 @@
 		71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CD2B5C96640009A342 /* FeedView.swift */; };
 		71EFD7D02B5C9BF20009A342 /* DailyChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */; };
 		71EFD7D42B5CAA7B0009A342 /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7D32B5CAA7B0009A342 /* HexColor.swift */; };
+		71EFD7D62B5CB62A0009A342 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7D52B5CB62A0009A342 /* NotificationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		71EFD7CD2B5C96640009A342 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChecklistView.swift; sourceTree = "<group>"; };
 		71EFD7D32B5CAA7B0009A342 /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
+		71EFD7D52B5CB62A0009A342 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */,
 				71EFD7CD2B5C96640009A342 /* FeedView.swift */,
 				71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */,
+				71EFD7D52B5CB62A0009A342 /* NotificationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 				71EFD7D02B5C9BF20009A342 /* DailyChecklistView.swift in Sources */,
 				71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */,
 				71EFD7C22B5C949F0009A342 /* LoginSignupView.swift in Sources */,
+				71EFD7D62B5CB62A0009A342 /* NotificationView.swift in Sources */,
 				71EFD7802B5C93270009A342 /* ContentView.swift in Sources */,
 				71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */,
 				71EFD7CA2B5C95FC0009A342 /* SessionStore.swift in Sources */,

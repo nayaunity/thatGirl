@@ -26,11 +26,14 @@ struct ThatGirlApp: App {
     var body: some Scene {
         WindowGroup {
             if sessionStore.isUserAuthenticated == .signedIn {
-                // If the user is signed in, show the TabView
-                ContentView()
-                    .environmentObject(sessionStore)
+                if sessionStore.hasCompletedProfile {
+                    ContentView()
+                        .environmentObject(sessionStore)
+                } else {
+                    CreateProfileView()
+                        .environmentObject(sessionStore)
+                }
             } else {
-                // If the user is not signed in, show the LoginSignupView
                 LoginSignupView()
                     .environmentObject(sessionStore)
             }

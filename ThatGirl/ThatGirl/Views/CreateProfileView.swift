@@ -167,7 +167,7 @@ struct CreateProfileView: View {
                 "genderIdentity": genderIdentity,
                 "bio": bio,
                 "profilePictureUrl": profileImageURL.absoluteString,
-                "dailyChecklist": initialChecklist 
+                "dailyChecklist": initialChecklist
             ]
 
             docRef.setData(values) { error in
@@ -178,12 +178,14 @@ struct CreateProfileView: View {
                 } else {
                     alertMessage = "Profile successfully saved!"
                     showAlert = true
-                    print("Attempting to navigate to SwipeableView...")
+                    print("Attempting to navigate to...")
                     self.navigateToSwipeableView = true
+                    self.sessionStore.hasCompletedProfile = true // Set profile completion flag here
                 }
             }
         }
     }
+
 
     func uploadImage(_ image: UIImage, completion: @escaping (_ url: URL?, _ error: Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {
