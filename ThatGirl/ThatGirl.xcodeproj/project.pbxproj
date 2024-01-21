@@ -32,6 +32,7 @@
 		71EFD7CA2B5C95FC0009A342 /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7C92B5C95FC0009A342 /* SessionStore.swift */; };
 		71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */; };
 		71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CD2B5C96640009A342 /* FeedView.swift */; };
+		71EFD7D02B5C9BF20009A342 /* DailyChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		71EFD7C92B5C95FC0009A342 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
 		71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutLinkView.swift; sourceTree = "<group>"; };
 		71EFD7CD2B5C96640009A342 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChecklistView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				71EFD7C32B5C94B70009A342 /* CreateProfileView.swift */,
 				71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */,
 				71EFD7CD2B5C96640009A342 /* FeedView.swift */,
+				71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71EFD7D02B5C9BF20009A342 /* DailyChecklistView.swift in Sources */,
 				71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */,
 				71EFD7C22B5C949F0009A342 /* LoginSignupView.swift in Sources */,
 				71EFD7802B5C93270009A342 /* ContentView.swift in Sources */,

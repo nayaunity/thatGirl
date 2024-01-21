@@ -14,6 +14,7 @@ struct LoginSignupView: View {
     @State private var errorMessage = ""
     @State private var navigateToProfileCreation = false
     @State private var navigateToFeedView = false
+    @State private var navigateToDailyChecklistView = false
     @State private var keyboardHeight: CGFloat = 0
 
     var body: some View {
@@ -47,7 +48,7 @@ struct LoginSignupView: View {
                     NavigationLink(destination: CreateProfileView(), isActive: $navigateToProfileCreation) {
                         EmptyView()
                     }
-                    NavigationLink(destination: FeedView(), isActive: $navigateToFeedView) {
+                    NavigationLink(destination: DailyChecklistView(), isActive: $navigateToDailyChecklistView) {
                         EmptyView()
                     }
                 }
@@ -73,7 +74,7 @@ struct LoginSignupView: View {
             if let error = error {
                 print("Login Error: \(error.localizedDescription)")
             } else {
-                self.navigateToFeedView = true
+                self.navigateToDailyChecklistView = true
             }
         }
     }

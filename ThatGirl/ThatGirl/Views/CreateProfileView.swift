@@ -94,8 +94,8 @@ struct CreateProfileView: View {
                     .padding()
                     .foregroundColor(Color.black)
                     .offset(x: -15)
-                NavigationLink(destination: FeedView()) {
-                    Text("Go To Feed")
+                NavigationLink(destination: DailyChecklistView()) {
+                    Text("Go To Checklist")
                 }
             }
             .padding(.horizontal, 40)
@@ -141,6 +141,12 @@ struct CreateProfileView: View {
                 showAlert = true
                 return
             }
+            
+            let initialChecklist: [[String: Any]] = [
+                ["taskName": "Drink Water", "isCompleted": false, "points": 10],
+                ["taskName": "Morning Yoga", "isCompleted": false, "points": 20],
+                // Add more tasks as needed
+            ]
 
             let db = Firestore.firestore()
             let docRef = db.collection("users").document(uid)
@@ -151,7 +157,8 @@ struct CreateProfileView: View {
                 "sex": sex,
                 "genderIdentity": genderIdentity,
                 "bio": bio,
-                "profilePictureUrl": profileImageURL.absoluteString
+                "profilePictureUrl": profileImageURL.absoluteString,
+                "dailyChecklist": initialChecklist 
             ]
 
             docRef.setData(values) { error in
