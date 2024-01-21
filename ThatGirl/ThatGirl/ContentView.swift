@@ -21,6 +21,10 @@ struct ContentView: View {
                     .tabItem {
                         Label("Feed", systemImage: "newspaper")
                     }
+                LeaderboardView()
+                    .tabItem {
+                        Label("Leaderboard", systemImage: "star")
+                    }
             }
             .navigationBarTitle("", displayMode: .inline)
             .navigationBarItems(
