@@ -22,10 +22,11 @@ struct Status: Identifiable, Codable {
 
 // View
 struct FeedView: View {
+    @EnvironmentObject var sessionStore: SessionStore // Assuming this has the current user's ID
     @State private var statusText: String = ""
     @State private var groupStatuses: [Status] = []
     @State private var isLoading: Bool = false
-    private let currentGroupId: String = "your_current_group_id" // Replace with actual group ID
+    @State private var userGroupIds: [String] = []
 
     var body: some View {
         VStack {
@@ -47,40 +48,31 @@ struct FeedView: View {
             if isLoading {
                 Spacer()
                 ProgressView()
+            } else if userGroupIds.isEmpty {
+                Text("You are not in any group.")
+                Spacer()
             } else {
                 List(groupStatuses) { status in
-                    HStack {
-                        if let imageUrl = status.userProfileImageUrl, let url = URL(string: imageUrl) {
-                            AsyncImage(url: url) { image in
-                                image.resizable()
-                            } placeholder: {
-                                Circle().fill(Color.gray)
-                            }
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                        }
-
-                        VStack(alignment: .leading) {
-                            Text(status.text)
-                            Text(timeElapsedSince(date: status.timestamp))
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-                    }
+                    // Status view code
                 }
             }
         }
         .padding()
-        .onAppear(perform: fetchGroupStatuses)
+        .onAppear(perform: fetchUserGroups)
     }
 
     private func postStatus() {
+        guard let firstGroupId = userGroupIds.first else {
+            print("User is not part of any group.")
+            return
+        }
+
         let db = Firestore.firestore()
         let statusData: [String: Any] = [
             "userId": Auth.auth().currentUser?.uid ?? "Unknown",
             "text": statusText,
             "timestamp": Timestamp(date: Date()),
-            "groupId": currentGroupId
+            "groupId": firstGroupId  // Use the first group ID
         ]
 
         db.collection("statuses").addDocument(data: statusData) { error in
@@ -93,63 +85,71 @@ struct FeedView: View {
         }
     }
 
-    private func fetchGroupStatuses() {
+    private func fetchUserGroups() {
         isLoading = true
+        guard let userId = Auth.auth().currentUser?.uid else {
+            isLoading = false
+            return
+        }
+
         let db = Firestore.firestore()
-        db.collection("statuses")
-          .whereField("groupId", isEqualTo: currentGroupId)
-          .order(by: "timestamp", descending: true)
+        db.collection("groups")
+          .whereField("members", arrayContains: userId)
           .getDocuments { (querySnapshot, error) in
               if let error = error {
-                  print("Error getting statuses: \(error)")
+                  print("Error getting groups: \(error)")
                   self.isLoading = false
               } else {
-                  guard let documents = querySnapshot?.documents else {
-                      self.isLoading = false
-                      return
-                  }
-                  self.groupStatuses = documents.compactMap { doc -> Status? in
-                      var status = try? doc.data(as: Status.self)
-                      fetchUserProfileImage(userId: status?.userId ?? "", completion: { url in
-                          status?.userProfileImageUrl = url
-                          self.groupStatuses = self.groupStatuses.map { $0.id == status?.id ? status! : $0 }
-                      })
-                      return status
-                  }
-                  self.isLoading = false
+                  self.userGroupIds = querySnapshot?.documents.map { $0.documentID } ?? []
+                  self.fetchGroupStatuses()
               }
           }
     }
 
+    private func fetchGroupStatuses() {
+        guard !userGroupIds.isEmpty else {
+            isLoading = false
+            return
+        }
 
-    private func fetchUserProfileImage(userId: String, completion: @escaping (String) -> Void) {
         let db = Firestore.firestore()
-        db.collection("users").document(userId).getDocument { (document, error) in
-            if let document = document, document.exists {
-                let data = document.data()
-                let imageUrl = data?["profilePictureUrl"] as? String ?? ""
-                completion(imageUrl)
-            } else {
-                print("Document does not exist")
-                completion("")
+        db.collection("statuses")
+          .whereField("groupId", in: userGroupIds)
+          .order(by: "timestamp", descending: true)
+          .getDocuments { (querySnapshot, error) in
+              // Status fetching and processing code
+          }
+    }
+
+    
+    private func fetchUserProfileImage(userId: String, completion: @escaping (String) -> Void) {
+            let db = Firestore.firestore()
+            db.collection("users").document(userId).getDocument { (document, error) in
+                if let document = document, document.exists {
+                    let data = document.data()
+                    let imageUrl = data?["profilePictureUrl"] as? String ?? ""
+                    completion(imageUrl)
+                } else {
+                    print("Document does not exist")
+                    completion("")
+                }
             }
         }
-    }
 
-    func timeElapsedSince(date: Date) -> String {
-        let timeInterval = Date().timeIntervalSince(date)
-        let minute = 60.0
-        let hour = 60.0 * minute
-        let day = 24.0 * hour
+        func timeElapsedSince(date: Date) -> String {
+            let timeInterval = Date().timeIntervalSince(date)
+            let minute = 60.0
+            let hour = 60.0 * minute
+            let day = 24.0 * hour
 
-        if timeInterval < hour {
-            return "\(Int(timeInterval / minute)) minutes ago"
-        } else if timeInterval < day {
-            return "\(Int(timeInterval / hour)) hours ago"
-        } else {
-            return "\(Int(timeInterval / day)) days ago"
+            if timeInterval < hour {
+                return "\(Int(timeInterval / minute)) minutes ago"
+            } else if timeInterval < day {
+                return "\(Int(timeInterval / hour)) hours ago"
+            } else {
+                return "\(Int(timeInterval / day)) days ago"
+            }
         }
-    }
 }
 
 // Preview
