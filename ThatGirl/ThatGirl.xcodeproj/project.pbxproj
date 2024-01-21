@@ -33,6 +33,7 @@
 		71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */; };
 		71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CD2B5C96640009A342 /* FeedView.swift */; };
 		71EFD7D02B5C9BF20009A342 /* DailyChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */; };
+		71EFD7D42B5CAA7B0009A342 /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7D32B5CAA7B0009A342 /* HexColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutLinkView.swift; sourceTree = "<group>"; };
 		71EFD7CD2B5C96640009A342 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		71EFD7CF2B5C9BF20009A342 /* DailyChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyChecklistView.swift; sourceTree = "<group>"; };
+		71EFD7D32B5CAA7B0009A342 /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				71EFD7C62B5C95420009A342 /* ImagePicker.swift */,
+				71EFD7D32B5CAA7B0009A342 /* HexColor.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */,
 				71EFD7CA2B5C95FC0009A342 /* SessionStore.swift in Sources */,
 				71EFD7C72B5C95420009A342 /* ImagePicker.swift in Sources */,
+				71EFD7D42B5CAA7B0009A342 /* HexColor.swift in Sources */,
 				71EFD7C42B5C94B70009A342 /* CreateProfileView.swift in Sources */,
 				71EFD77E2B5C93270009A342 /* ThatGirlApp.swift in Sources */,
 			);

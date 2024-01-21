@@ -32,7 +32,7 @@ struct CreateProfileView: View {
                 
                 TextField("Name", text: $name)
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color(uiColor: .systemGray6))
                     .cornerRadius(8)
                     .font(Font.system(size: 16, weight: .light, design: .default))
                 

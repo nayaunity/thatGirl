@@ -29,23 +29,35 @@ struct DailyChecklistView: View {
         VStack {
             Text(getCurrentDateString())
                 .font(.title)
-                .padding()
+                .fontWeight(.light)
+                .padding(.top)
+//                .foregroundColor(HexColor.fromHex("CCCCFF"))
 
             Text("Points: \(totalPoints)")
-                .font(.headline)
-                .padding()
+                .font(.title2)
+//                .foregroundColor(HexColor.fromHex("CCCCFF"))
+                .padding(.bottom)
 
-            List($checklist) { $item in
+            List($checklist.indices, id: \.self) { index in
                 HStack {
-                    Text(item.taskName)
+                    Text(checklist[index].taskName)
+                        .font(.headline)
+                        .padding(.vertical, 8)
                     Spacer()
-                    Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
+                    Image(systemName: checklist[index].isCompleted ? "checkmark.circle.fill" : "circle")
+                        .imageScale(.large)
+                        .foregroundColor(checklist[index].isCompleted ? HexColor.fromHex("A888FF") : HexColor.fromHex("CCCCFF"))
                         .onTapGesture {
-                            toggleTaskCompletion(item)
+                            toggleTaskCompletion(index)
                         }
                 }
+                .padding(.horizontal)
+                .background(RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(checklist[index].isCompleted ? HexColor.fromHex("CCCCFF").opacity(0.3) : Color.white))
             }
+            .listStyle(PlainListStyle())
         }
+        .padding()
         .onAppear(perform: loadChecklist)
     }
 
@@ -67,12 +79,10 @@ struct DailyChecklistView: View {
         }
     }
 
-    func toggleTaskCompletion(_ item: ChecklistItem) {
-        guard let index = checklist.firstIndex(where: { $0.id == item.id }) else { return }
-
+    func toggleTaskCompletion(_ index: Int) {
         checklist[index].isCompleted.toggle()
-        updateChecklistInFirestore() // Update Firestore with new checklist
-        calculateTotalPoints() // Recalculate total points
+        updateChecklistInFirestore()
+        calculateTotalPoints()
     }
 
     private func updateChecklistInFirestore() {
