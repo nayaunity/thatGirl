@@ -143,18 +143,18 @@ struct CreateProfileView: View {
             }
             
             let initialChecklist: [[String: Any]] = [
-                ["taskName": "Wake Up Early", "isCompleted": false, "points": 10],
+                ["taskName": "Wake Up Before 10am", "isCompleted": false, "points": 10],
+                ["taskName": "Oil Pull", "isCompleted": false, "points": 5],
+                ["taskName": "Double Cleanse", "isCompleted": false, "points": 5],
+                ["taskName": "Apply Sunscreen", "isCompleted": false, "points": 5],
                 ["taskName": "Morning Meditation", "isCompleted": false, "points": 15],
-                ["taskName": "Exercise or Yoga", "isCompleted": false, "points": 20],
-                ["taskName": "Healthy Breakfast", "isCompleted": false, "points": 15],
-                ["taskName": "Journaling", "isCompleted": false, "points": 10],
+                ["taskName": "30 Minutes of Exercise", "isCompleted": false, "points": 20],
+                ["taskName": "Protein Filled Breakfast", "isCompleted": false, "points": 15],
+                ["taskName": "10 Minute Journaling", "isCompleted": false, "points": 10],
                 ["taskName": "Read a Book", "isCompleted": false, "points": 10],
-                ["taskName": "Drink 8 Glasses of Water", "isCompleted": false, "points": 15],
-                ["taskName": "Plan the Day", "isCompleted": false, "points": 10],
-                ["taskName": "Skincare Routine", "isCompleted": false, "points": 10],
-                ["taskName": "Eat a Balanced Diet", "isCompleted": false, "points": 15],
-                ["taskName": "Limit Screen Time", "isCompleted": false, "points": 10],
-                ["taskName": "Quality Sleep", "isCompleted": false, "points": 10]
+                ["taskName": "Drink 1/2 Gallon of Water", "isCompleted": false, "points": 15],
+                ["taskName": "Write Today's Goals", "isCompleted": false, "points": 10],
+                ["taskName": "Read Before Bed", "isCompleted": false, "points": 10]
             ]
 
             let db = Firestore.firestore()
