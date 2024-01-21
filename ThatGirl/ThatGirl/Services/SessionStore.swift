@@ -7,10 +7,11 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestore
 
 class SessionStore: ObservableObject {
     @Published var isUserAuthenticated: AuthState = .undefined
-//    @Published var hasCompletedProfile = false  // New property to track profile completion
+    @Published var hasCompletedProfile = false
 
     var authRef: Auth!
     private var _authListener: AuthStateDidChangeListenerHandle!
@@ -21,13 +22,12 @@ class SessionStore: ObservableObject {
         _authListener = self.authRef.addStateDidChangeListener { (auth, user) in
             if let user = user {
                 print("User is signed in with uid:", user.uid)
-                // Update the authentication state but don't change the profile completion state here.
                 self.isUserAuthenticated = .signedIn
+                self.checkUserProfileCompletion(uid: user.uid)
             } else {
                 print("User is not signed in.")
                 self.isUserAuthenticated = .signedOut
-                // Reset profile completion state when signed out
-//                self.hasCompletedProfile = false
+                self.hasCompletedProfile = false
             }
         }
     }
@@ -35,8 +35,22 @@ class SessionStore: ObservableObject {
     func signOut() {
         do {
             try authRef.signOut()
+//            self.hasCompletedProfile = false
         } catch {
             print("Error signing out")
+        }
+    }
+
+    private func checkUserProfileCompletion(uid: String) {
+        let db = Firestore.firestore()
+        db.collection("users").document(uid).getDocument { document, error in
+            if let document = document, document.exists {
+                let data = document.data()
+                self.hasCompletedProfile = data?["profileCompleted"] as? Bool ?? false
+            } else {
+                print("Document does not exist or error: \(error?.localizedDescription ?? "")")
+                self.hasCompletedProfile = false
+            }
         }
     }
     

@@ -22,89 +22,90 @@ struct CreateProfileView: View {
     @State private var showImagePicker: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
-    @State private var navigateToSwipeableView: Bool = false
+    @State private var navigateToDailyChecklistView: Bool = false
 
     var body: some View {
-            VStack(alignment: .leading, spacing: 20) {
-                LogoutLink()
-                    .offset(y: -100)
-                    .offset(x: -15)
-                
-                TextField("Name", text: $name)
-                    .padding()
-                    .background(Color(uiColor: .systemGray6))
-                    .cornerRadius(8)
-                    .font(Font.system(size: 16, weight: .light, design: .default))
-                
-                HStack(spacing: 20) {
-                    VStack {
-                        Text("Sex:")
-                            .font(Font.system(size: 16, weight: .light, design: .default))
-                        Picker("Select Sex", selection: $sex) {
-                            Text("Select...").tag("")
-                            Text("Male").tag("Male")
-                            Text("Female").tag("Female")
-                        }.pickerStyle(MenuPickerStyle())
-                    }
-                    Spacer()
-                    
-                    VStack {
-                        Text("Gender Identity:")
-                            .font(Font.system(size: 16, weight: .light, design: .default))
-                        Picker("Select Gender Identity", selection: $genderIdentity) {
-                            Text("Select...").tag("")
-                            Text("Man").tag("Man")
-                            Text("Woman").tag("Woman")
-                            Text("Non-binary").tag("Non-binary")
-                        }.pickerStyle(MenuPickerStyle())
-                    }
+        VStack(alignment: .leading, spacing: 20) {
+            LogoutLink()
+                .offset(y: -100)
+                .offset(x: -15)
+            
+            TextField("Name", text: $name)
+                .padding()
+                .background(Color(uiColor: .systemGray6))
+                .cornerRadius(8)
+                .font(Font.system(size: 16, weight: .light, design: .default))
+            
+            HStack(spacing: 20) {
+                VStack {
+                    Text("Sex:")
+                        .font(Font.system(size: 16, weight: .light, design: .default))
+                    Picker("Select Sex", selection: $sex) {
+                        Text("Select...").tag("")
+                        Text("Male").tag("Male")
+                        Text("Female").tag("Female")
+                    }.pickerStyle(MenuPickerStyle())
                 }
+                Spacer()
+                
+                VStack {
+                    Text("Gender Identity:")
+                        .font(Font.system(size: 16, weight: .light, design: .default))
+                    Picker("Select Gender Identity", selection: $genderIdentity) {
+                        Text("Select...").tag("")
+                        Text("Man").tag("Man")
+                        Text("Woman").tag("Woman")
+                        Text("Non-binary").tag("Non-binary")
+                    }.pickerStyle(MenuPickerStyle())
+                }
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
+            
+            TextField("Bio", text: $bio)
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
-                
-                TextField("Bio", text: $bio)
-                    .padding()
-                    .background(Color(.systemGray6))
+                .font(Font.system(size: 16, weight: .light, design: .default))
+            
+            if let image = inputImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
                     .cornerRadius(8)
-                    .font(Font.system(size: 16, weight: .light, design: .default))
-                
-                if let image = inputImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .cornerRadius(8)
-                } else {
-                    Text("No profile picture selected")
-                        .font(Font.system(size: 14, weight: .light, design: .default))
-                }
-                
-                Button("Select Profile Picture") {
-                    showImagePicker = true
-                }
+            } else {
+                Text("No profile picture selected")
+                    .font(Font.system(size: 14, weight: .light, design: .default))
+            }
+            
+            Button("Select Profile Picture") {
+                showImagePicker = true
+            }
+            .padding()
+            .foregroundColor(Color.black)
+            .cornerRadius(8)
+            .offset(x: -15)
+            
+            Divider().overlay(.black)
+            
+            Button("Save Profile", action: saveProfile)
                 .padding()
                 .foregroundColor(Color.black)
-                .cornerRadius(8)
                 .offset(x: -15)
-                
-                Divider().overlay(.black)
-                
-                Button("Save Profile", action: saveProfile)
-                    .padding()
-                    .foregroundColor(Color.black)
-                    .offset(x: -15)
-                NavigationLink(destination: DailyChecklistView()) {
-                    Text("Go To Checklist")
-                }
+
+            NavigationLink(destination: DailyChecklistView(), isActive: $navigateToDailyChecklistView) {
+                EmptyView()
             }
-            .padding(.horizontal, 40)
-            .sheet(isPresented: $showImagePicker, onDismiss: loadImage) {
-                ImagePicker(image: $inputImage)
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Message"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-            }
+        }
+        .padding(.horizontal, 40)
+        .sheet(isPresented: $showImagePicker, onDismiss: loadImage) {
+            ImagePicker(image: $inputImage)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Message"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
     
     func allFieldsValid() -> Bool {
@@ -113,7 +114,7 @@ struct CreateProfileView: View {
     
     func loadImage() {
         guard let _ = inputImage else { return }
-        // You can process the image (if needed) or directly upload it to Firebase Storage
+        // Additional processing if required
     }
     
     func saveProfile() {
@@ -127,35 +128,33 @@ struct CreateProfileView: View {
         guard let email = Auth.auth().currentUser?.email else { return }
         guard let image = inputImage else { return }
 
-        // First, upload the image
         uploadImage(image) { url, error in
             if let error = error {
-                print("Error uploading image: \(error)")
-                alertMessage = "Error uploading profile picture. Please try again."
-                showAlert = true
+                self.alertMessage = "Error uploading profile picture. Please try again."
+                self.showAlert = true
                 return
             }
 
             guard let profileImageURL = url else {
-                alertMessage = "Error getting profile picture URL. Please try again."
-                showAlert = true
+                self.alertMessage = "Error getting profile picture URL. Please try again."
+                self.showAlert = true
                 return
             }
-            
+
             let initialChecklist: [[String: Any]] = [
-                ["taskName": "Wake Up Before 10am", "isCompleted": false, "points": 10],
-                ["taskName": "Oil Pull", "isCompleted": false, "points": 5],
-                ["taskName": "Double Cleanse", "isCompleted": false, "points": 5],
-                ["taskName": "Apply Sunscreen", "isCompleted": false, "points": 5],
-                ["taskName": "Morning Meditation", "isCompleted": false, "points": 15],
-                ["taskName": "30 Minutes of Exercise", "isCompleted": false, "points": 20],
-                ["taskName": "Protein Filled Breakfast", "isCompleted": false, "points": 15],
-                ["taskName": "10 Minute Journaling", "isCompleted": false, "points": 10],
-                ["taskName": "Read a Book", "isCompleted": false, "points": 10],
-                ["taskName": "Drink 1/2 Gallon of Water", "isCompleted": false, "points": 15],
-                ["taskName": "Write Today's Goals", "isCompleted": false, "points": 10],
-                ["taskName": "Read Before Bed", "isCompleted": false, "points": 10]
-            ]
+                            ["taskName": "Wake Up Before 10am", "isCompleted": false, "points": 10],
+                            ["taskName": "Oil Pull", "isCompleted": false, "points": 5],
+                            ["taskName": "Double Cleanse", "isCompleted": false, "points": 5],
+                            ["taskName": "Apply Sunscreen", "isCompleted": false, "points": 5],
+                            ["taskName": "Morning Meditation", "isCompleted": false, "points": 15],
+                            ["taskName": "30 Minutes of Exercise", "isCompleted": false, "points": 20],
+                            ["taskName": "Protein Filled Breakfast", "isCompleted": false, "points": 15],
+                            ["taskName": "10 Minute Journaling", "isCompleted": false, "points": 10],
+                            ["taskName": "Read a Book", "isCompleted": false, "points": 10],
+                            ["taskName": "Drink 1/2 Gallon of Water", "isCompleted": false, "points": 15],
+                            ["taskName": "Write Today's Goals", "isCompleted": false, "points": 10],
+                            ["taskName": "Read Before Bed", "isCompleted": false, "points": 10]
+                        ]
 
             let db = Firestore.firestore()
             let docRef = db.collection("users").document(uid)
@@ -167,25 +166,23 @@ struct CreateProfileView: View {
                 "genderIdentity": genderIdentity,
                 "bio": bio,
                 "profilePictureUrl": profileImageURL.absoluteString,
-                "dailyChecklist": initialChecklist
+                "dailyChecklist": initialChecklist,
+                "profileCompleted": true  // Mark profile as completed
             ]
 
             docRef.setData(values) { error in
                 if let error = error {
-                    print("Error writing document: \(error)")
-                    alertMessage = "Error saving profile. Please try again."
-                    showAlert = true
+                    self.alertMessage = "Error saving profile. Please try again."
+                    self.showAlert = true
                 } else {
-                    alertMessage = "Profile successfully saved!"
-                    showAlert = true
-                    print("Attempting to navigate to...")
-                    self.navigateToSwipeableView = true
-                    self.sessionStore.hasCompletedProfile = true // Set profile completion flag here
+                    self.alertMessage = "Profile successfully saved!"
+                    self.showAlert = true
+                    self.navigateToDailyChecklistView = true
+                    self.sessionStore.hasCompletedProfile = true
                 }
             }
         }
     }
-
 
     func uploadImage(_ image: UIImage, completion: @escaping (_ url: URL?, _ error: Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -214,6 +211,6 @@ struct CreateProfileView: View {
 
 struct CreateProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateProfileView()
+        CreateProfileView().environmentObject(SessionStore())
     }
 }

@@ -13,7 +13,6 @@ struct LoginSignupView: View {
     @State private var password = ""
     @State private var errorMessage = ""
     @State private var navigateToProfileCreation = false
-    @State private var navigateToFeedView = false
     @State private var navigateToDailyChecklistView = false
     @State private var keyboardHeight: CGFloat = 0
 

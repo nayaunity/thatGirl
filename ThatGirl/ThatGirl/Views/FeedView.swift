@@ -17,96 +17,70 @@ struct Status: Identifiable, Codable {
     let text: String
     let timestamp: Date
     let groupId: String
+    var userProfileImageUrl: String?
 }
 
+// View
 struct FeedView: View {
     @State private var statusText: String = ""
-    @State private var userGroupIds: [String] = []
     @State private var groupStatuses: [Status] = []
     @State private var isLoading: Bool = false
-    let currentUserId = Auth.auth().currentUser?.uid
+    private let currentGroupId: String = "your_current_group_id" // Replace with actual group ID
 
     var body: some View {
         VStack {
-            // Status Input Area
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Share your status:")
-                    .font(.headline)
-
+            Text("Share your status:")
+                .font(.headline)
+            
+            HStack {
                 TextField("What's on your mind?", text: $statusText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
 
                 Button("Post", action: postStatus)
-                    .font(.headline)
                     .padding()
-                    .background(Color.blue)
+                    .background(HexColor.fromHex("A888FF"))
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(radius: 2)
 
             if isLoading {
+                Spacer()
                 ProgressView()
             } else {
                 List(groupStatuses) { status in
-                    VStack(alignment: .leading) {
-                        Text(status.text)
-                        Text("Posted by \(status.userId)")
-                            .font(.caption)
-                        Text("On \(status.timestamp, formatter: dateFormatter)")
-                            .font(.caption)
+                    HStack {
+                        if let imageUrl = status.userProfileImageUrl, let url = URL(string: imageUrl) {
+                            AsyncImage(url: url) { image in
+                                image.resizable()
+                            } placeholder: {
+                                Circle().fill(Color.gray)
+                            }
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                        }
+
+                        VStack(alignment: .leading) {
+                            Text(status.text)
+                            Text(timeElapsedSince(date: status.timestamp))
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
             }
         }
         .padding()
-        .onAppear(perform: fetchUserGroupIds)
-    }
-
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }
-
-    private func fetchUserGroupIds() {
-        isLoading = true
-        let db = Firestore.firestore()
-        // Assuming you have the user's ID stored in UserDefaults or passed down
-        guard let userId = currentUserId else {
-            print("User ID not found")
-            return
-        }
-        
-        db.collection("groups")
-          .whereField("members", arrayContains: userId)
-          .getDocuments { (querySnapshot, error) in
-              if let error = error {
-                  print("Error getting groups: \(error)")
-                  isLoading = false
-              } else {
-                  userGroupIds = querySnapshot?.documents.map { $0.documentID } ?? []
-                  fetchGroupStatuses()
-              }
-          }
+        .onAppear(perform: fetchGroupStatuses)
     }
 
     private func postStatus() {
-        guard let groupId = userGroupIds.first else {
-            print("No group ID available")
-            return
-        }
-
         let db = Firestore.firestore()
         let statusData: [String: Any] = [
-            "userId": currentUserId,
+            "userId": Auth.auth().currentUser?.uid ?? "Unknown",
             "text": statusText,
             "timestamp": Timestamp(date: Date()),
-            "groupId": groupId
+            "groupId": currentGroupId
         ]
 
         db.collection("statuses").addDocument(data: statusData) { error in
@@ -120,29 +94,65 @@ struct FeedView: View {
     }
 
     private func fetchGroupStatuses() {
-        guard let groupId = userGroupIds.first else {
-            isLoading = false
-            return
-        }
-
+        isLoading = true
         let db = Firestore.firestore()
         db.collection("statuses")
-          .whereField("groupId", isEqualTo: groupId)
+          .whereField("groupId", isEqualTo: currentGroupId)
           .order(by: "timestamp", descending: true)
-          .getDocuments { (querySnapshot, err) in
-              if let err = err {
-                  print("Error getting statuses: \(err)")
-                  isLoading = false
+          .getDocuments { (querySnapshot, error) in
+              if let error = error {
+                  print("Error getting statuses: \(error)")
+                  self.isLoading = false
               } else {
-                  groupStatuses = querySnapshot?.documents.compactMap { document -> Status? in
-                      try? document.data(as: Status.self)
-                  } ?? []
-                  isLoading = false
+                  guard let documents = querySnapshot?.documents else {
+                      self.isLoading = false
+                      return
+                  }
+                  self.groupStatuses = documents.compactMap { doc -> Status? in
+                      var status = try? doc.data(as: Status.self)
+                      fetchUserProfileImage(userId: status?.userId ?? "", completion: { url in
+                          status?.userProfileImageUrl = url
+                          self.groupStatuses = self.groupStatuses.map { $0.id == status?.id ? status! : $0 }
+                      })
+                      return status
+                  }
+                  self.isLoading = false
               }
           }
     }
+
+
+    private func fetchUserProfileImage(userId: String, completion: @escaping (String) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).getDocument { (document, error) in
+            if let document = document, document.exists {
+                let data = document.data()
+                let imageUrl = data?["profilePictureUrl"] as? String ?? ""
+                completion(imageUrl)
+            } else {
+                print("Document does not exist")
+                completion("")
+            }
+        }
+    }
+
+    func timeElapsedSince(date: Date) -> String {
+        let timeInterval = Date().timeIntervalSince(date)
+        let minute = 60.0
+        let hour = 60.0 * minute
+        let day = 24.0 * hour
+
+        if timeInterval < hour {
+            return "\(Int(timeInterval / minute)) minutes ago"
+        } else if timeInterval < day {
+            return "\(Int(timeInterval / hour)) hours ago"
+        } else {
+            return "\(Int(timeInterval / day)) days ago"
+        }
+    }
 }
 
+// Preview
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
         FeedView()
