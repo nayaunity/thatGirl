@@ -143,9 +143,18 @@ struct CreateProfileView: View {
             }
             
             let initialChecklist: [[String: Any]] = [
-                ["taskName": "Drink Water", "isCompleted": false, "points": 10],
-                ["taskName": "Morning Yoga", "isCompleted": false, "points": 20],
-                // Add more tasks as needed
+                ["taskName": "Wake Up Early", "isCompleted": false, "points": 10],
+                ["taskName": "Morning Meditation", "isCompleted": false, "points": 15],
+                ["taskName": "Exercise or Yoga", "isCompleted": false, "points": 20],
+                ["taskName": "Healthy Breakfast", "isCompleted": false, "points": 15],
+                ["taskName": "Journaling", "isCompleted": false, "points": 10],
+                ["taskName": "Read a Book", "isCompleted": false, "points": 10],
+                ["taskName": "Drink 8 Glasses of Water", "isCompleted": false, "points": 15],
+                ["taskName": "Plan the Day", "isCompleted": false, "points": 10],
+                ["taskName": "Skincare Routine", "isCompleted": false, "points": 10],
+                ["taskName": "Eat a Balanced Diet", "isCompleted": false, "points": 15],
+                ["taskName": "Limit Screen Time", "isCompleted": false, "points": 10],
+                ["taskName": "Quality Sleep", "isCompleted": false, "points": 10]
             ]
 
             let db = Firestore.firestore()
