@@ -26,6 +26,12 @@
 		71EFD7BB2B5C94040009A342 /* FirebaseInAppMessagingSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 71EFD7BA2B5C94040009A342 /* FirebaseInAppMessagingSwift-Beta */; };
 		71EFD7BD2B5C94040009A342 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 71EFD7BC2B5C94040009A342 /* FirebaseMessaging */; };
 		71EFD7BF2B5C94040009A342 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 71EFD7BE2B5C94040009A342 /* FirebaseStorage */; };
+		71EFD7C22B5C949F0009A342 /* LoginSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7C12B5C949F0009A342 /* LoginSignupView.swift */; };
+		71EFD7C42B5C94B70009A342 /* CreateProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7C32B5C94B70009A342 /* CreateProfileView.swift */; };
+		71EFD7C72B5C95420009A342 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7C62B5C95420009A342 /* ImagePicker.swift */; };
+		71EFD7CA2B5C95FC0009A342 /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7C92B5C95FC0009A342 /* SessionStore.swift */; };
+		71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */; };
+		71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71EFD7CD2B5C96640009A342 /* FeedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +63,12 @@
 		71EFD7982B5C93280009A342 /* ThatGirlUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThatGirlUITests.swift; sourceTree = "<group>"; };
 		71EFD79A2B5C93280009A342 /* ThatGirlUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThatGirlUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		71EFD7A72B5C93AD0009A342 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		71EFD7C12B5C949F0009A342 /* LoginSignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSignupView.swift; sourceTree = "<group>"; };
+		71EFD7C32B5C94B70009A342 /* CreateProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProfileView.swift; sourceTree = "<group>"; };
+		71EFD7C62B5C95420009A342 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		71EFD7C92B5C95FC0009A342 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
+		71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutLinkView.swift; sourceTree = "<group>"; };
+		71EFD7CD2B5C96640009A342 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +130,9 @@
 		71EFD77C2B5C93270009A342 /* ThatGirl */ = {
 			isa = PBXGroup;
 			children = (
+				71EFD7C82B5C95F10009A342 /* Services */,
+				71EFD7C52B5C952F0009A342 /* Helpers */,
+				71EFD7C02B5C948F0009A342 /* Views */,
 				71EFD77D2B5C93270009A342 /* ThatGirlApp.swift */,
 				71EFD77F2B5C93270009A342 /* ContentView.swift */,
 				71EFD7812B5C93280009A342 /* Assets.xcassets */,
@@ -150,6 +165,33 @@
 				71EFD79A2B5C93280009A342 /* ThatGirlUITestsLaunchTests.swift */,
 			);
 			path = ThatGirlUITests;
+			sourceTree = "<group>";
+		};
+		71EFD7C02B5C948F0009A342 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				71EFD7C12B5C949F0009A342 /* LoginSignupView.swift */,
+				71EFD7C32B5C94B70009A342 /* CreateProfileView.swift */,
+				71EFD7CB2B5C962D0009A342 /* LogoutLinkView.swift */,
+				71EFD7CD2B5C96640009A342 /* FeedView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		71EFD7C52B5C952F0009A342 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				71EFD7C62B5C95420009A342 /* ImagePicker.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		71EFD7C82B5C95F10009A342 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				71EFD7C92B5C95FC0009A342 /* SessionStore.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,7 +341,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71EFD7CE2B5C96640009A342 /* FeedView.swift in Sources */,
+				71EFD7C22B5C949F0009A342 /* LoginSignupView.swift in Sources */,
 				71EFD7802B5C93270009A342 /* ContentView.swift in Sources */,
+				71EFD7CC2B5C962D0009A342 /* LogoutLinkView.swift in Sources */,
+				71EFD7CA2B5C95FC0009A342 /* SessionStore.swift in Sources */,
+				71EFD7C72B5C95420009A342 /* ImagePicker.swift in Sources */,
+				71EFD7C42B5C94B70009A342 /* CreateProfileView.swift in Sources */,
 				71EFD77E2B5C93270009A342 /* ThatGirlApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
