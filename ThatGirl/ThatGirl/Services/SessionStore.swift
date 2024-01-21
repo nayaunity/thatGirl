@@ -10,7 +10,7 @@ import Firebase
 
 class SessionStore: ObservableObject {
     @Published var isUserAuthenticated: AuthState = .undefined
-    @Published var hasCompletedProfile = false  // New property to track profile completion
+//    @Published var hasCompletedProfile = false  // New property to track profile completion
 
     var authRef: Auth!
     private var _authListener: AuthStateDidChangeListenerHandle!
@@ -27,7 +27,7 @@ class SessionStore: ObservableObject {
                 print("User is not signed in.")
                 self.isUserAuthenticated = .signedOut
                 // Reset profile completion state when signed out
-                self.hasCompletedProfile = false
+//                self.hasCompletedProfile = false
             }
         }
     }
