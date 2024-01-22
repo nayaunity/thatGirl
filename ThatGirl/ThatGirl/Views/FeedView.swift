@@ -19,10 +19,81 @@ struct Status: Identifiable, Codable {
     let timestamp: Date
     let groupId: String
     var userProfileImageUrl: String?
-    var imageUrl: String?  // URL of the uploaded photo
+    var imageUrl: String?
 }
 
-// View
+// CustomListItem struct
+struct CustomListItem: View {
+    let status: Status
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            userProfileImage
+            VStack(alignment: .leading, spacing: 5) {
+                Text(status.text)
+                    .font(.body)
+                    .foregroundColor(.primary)
+                if let imageUrl = status.imageUrl, let url = URL(string: imageUrl) {
+                    statusImage(url: url)
+                }
+                Text(timeElapsedSince(date: status.timestamp))
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(.vertical, 20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white)
+    }
+
+    private var userProfileImage: some View {
+        // Define the user profile image view
+        Group {
+            if let imageUrl = status.userProfileImageUrl, let url = URL(string: imageUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                } placeholder: {
+                    Circle().fill(Color.gray)
+                }
+                .scaledToFill()
+                .frame(width: 40, height: 40)
+                .clipShape(Circle())
+            } else {
+                Circle().fill(Color.gray)
+                    .frame(width: 40, height: 40)
+            }
+        }
+    }
+
+    private func statusImage(url: URL) -> some View {
+        // Define the status image view
+        AsyncImage(url: url) { image in
+            image.resizable()
+        } placeholder: {
+            ProgressView()
+        }
+        .aspectRatio(contentMode: .fit)
+        .frame(maxWidth: .infinity)
+        .cornerRadius(10)
+    }
+
+    func timeElapsedSince(date: Date) -> String {
+        let timeInterval = Date().timeIntervalSince(date)
+        let minute = 60.0
+        let hour = 60.0 * minute
+        let day = 24.0 * hour
+
+        if timeInterval < hour {
+            return "\(Int(timeInterval / minute)) minutes ago"
+        } else if timeInterval < day {
+            return "\(Int(timeInterval / hour)) hours ago"
+        } else {
+            return "\(Int(timeInterval / day)) days ago"
+        }
+    }
+}
+
+// FeedView struct
 struct FeedView: View {
     @EnvironmentObject var sessionStore: SessionStore
     @State private var statusText: String = ""
@@ -36,16 +107,36 @@ struct FeedView: View {
     var body: some View {
         VStack {
             HStack {
-                TextField("What's on your mind?", text: $statusText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-
-                Button("Upload Photo", action: {
-                    self.showImagePicker = true
-                })
+                HStack {
+                    TextField("What's on your mind?", text: $statusText)
+                        .padding()
+                    
+                    Button(action: {
+                        self.showImagePicker = true
+                    }) {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .padding()
+                            .foregroundColor(.black)
+                            .cornerRadius(10)
+                    }
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.gray, lineWidth: 1)
+                )
+                
+                Button("Post") {
+                    if selectedImage != nil {
+                        uploadPhoto()
+                    } else {
+                        postStatus()
+                    }
+                }
                 .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
+                .background(HexColor.fromHex("CCCCFF"))
+                .foregroundColor(.black)
                 .cornerRadius(10)
             }
 
@@ -56,53 +147,22 @@ struct FeedView: View {
                     .frame(height: 200)
             }
 
-            Button("Post") {
-                if selectedImage != nil {
-                    uploadPhoto()
-                } else {
-                    postStatus()
-                }
-            }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+            Spacer()
 
             if isLoading {
-                Spacer()
                 ProgressView()
             } else if userGroupIds.isEmpty {
                 Text("You are not in any group.")
             } else {
-                List(groupStatuses) { status in
-                    HStack {
-                        if let imageUrl = status.userProfileImageUrl, let url = URL(string: imageUrl) {
-                            AsyncImage(url: url) { image in
-                                image.resizable()
-                            } placeholder: {
-                                Circle().fill(Color.gray)
-                            }
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                        }
-
-                        VStack(alignment: .leading) {
-                            if let imageUrl = status.imageUrl, let url = URL(string: imageUrl) {
-                                AsyncImage(url: url) { image in
-                                    image.resizable()
-                                } placeholder: {
-                                    ProgressView()
-                                }
-                                .frame(width: 250, height: 250)
-                                .cornerRadius(10)
-                            }
-                            Text(status.text)
-                            Text(timeElapsedSince(date: status.timestamp))
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(groupStatuses) { status in
+                            CustomListItem(status: status)
+                            Divider()
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
             }
         }
         .padding()
@@ -132,7 +192,7 @@ struct FeedView: View {
                 }
 
                 self.uploadedImageUrl = downloadURL.absoluteString
-                self.postStatus() // Call postStatus here after image URL is set
+                self.postStatus()
             }
         }
     }
@@ -161,7 +221,6 @@ struct FeedView: View {
             } else {
                 self.statusText = ""
                 self.selectedImage = nil
-                // No need to reset uploadedImageUrl here
                 self.fetchGroupStatuses()
             }
         }
